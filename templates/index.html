@@ -10,26 +10,26 @@
             <h1 class="mt-5">Raspberry Pi Pico Control</h1>
             <form id="led-form" method="POST">
                 <label for="red">R:</label>
-                <input type="range" min="0" max="255" name="red" id="red"
-                       {% if rainbow_mode %}disabled{% endif %}><br><br>
+                <input type="range" min="0" max="255" name="red" id="red" {% if rainbow_mode %}disabled{% endif %}><br><br>
 
                 <label for="green">G:</label>
-                <input type="range" min="0" max="255" name="green" id="green"
-                       {% if rainbow_mode %}disabled{% endif %}><br><br>
+                <input type="range" min="0" max="255" name="green" id="green" {% if rainbow_mode %}disabled{% endif %}><br><br>
 
                 <label for="blue">B:</label>
-                <input type="range" min="0" max="255" name="blue" id="blue"
-                       {% if rainbow_mode %}disabled{% endif %}><br><br>
+                <input type="range" min="0" max="255" name="blue" id="blue" {% if rainbow_mode %}disabled{% endif %}><br><br>
 
                 <input type="checkbox" name="rainbow_mode" id="rainbow_mode">
                 <label for="rainbow_mode">Rainbow Mode</label><br><br>
 
-                <div id="speed-wrapper">
+                <div id="rainbow-settings">
+                    <select name="rainbow_effect" id="rainbow_effect">
+                        <option value="rainbow">Rainbow</option>
+                        <option value="wave">Wave</option>
+                        <option value="sync">Sync</option>
+                    </select><br><br>
+
                     <label for="speed">Speed:</label>
-                    <input type="range" min="1" max="128" name="speed"
-                           id="speed"
-                           {% if not rainbow_mode %}disabled{% endif %}>
-                    <br><br>
+                    <input type="range" min="1" max="128" name="speed" id="speed" {% if not rainbow_mode %}disabled{% endif %}><br><br>
                 </div>
 
                 <input type="submit" value="Set RGB">
