@@ -7,7 +7,7 @@
 <li>MicroPython programming language</li>
 <li>Flask web framework</li>
 <li>MQTT protocol for message communication</li>
-<li>HTML and JavaScript for the user interface</li>
+<li>HTML, Bootstrap CSS, and JavaScript for the user interface</li>
 </ul>
 <h2>Description</h2>
 <p>The project allows the user to control the WS2812 strip by sending MQTT messages. The user interface is a web page that displays a color picker and a checkbox for enabling a rainbow effect. When the user selects a color and submits the form, an MQTT message is sent to the Pico containing the color information. If the rainbow effect is enabled, the message also includes the speed of the effect.</p>
