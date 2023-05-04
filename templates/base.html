@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon-32x32.png') }}" type="image/x-icon">
+</head>
+<body>
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+<!-- Bootstrap JS -->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<!-- Custom JS -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
