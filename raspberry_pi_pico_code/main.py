@@ -67,7 +67,7 @@ def callback(topic, message):
     # Define the callback function to handle received messages
     global rainbow_mode, rainbow_speed
     print("Received message: {} on topic: {}".format(message, topic))
-    if message.startswith(b"rgb") and b":rainbow" not in message:
+    if message.startswith(b"rgb"):
         rainbow_mode = False
         rgb = message.decode().split(":")[1].split(",")
         r = int(rgb[0])
@@ -77,7 +77,7 @@ def callback(topic, message):
         np[1] = (r, g, b)
         np[2] = (r, g, b)
         np.write()
-    elif b":rainbow" in message:
+    elif message.startswith(b"rainbow"):
         # Turn on rainbow mode
         rainbow_mode = True
         # Extract the speed from the message

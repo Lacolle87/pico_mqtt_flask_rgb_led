@@ -28,7 +28,8 @@ $(function () {
             } else if (rainbowEffect === 'sync') {
                 message = 'sync';
             }
-            message += `.${speed}`;
+            var reversedSpeed = parseInt(speedInput.max) + parseInt(speedInput.min) - parseInt(speed);
+            message += `.${reversedSpeed}`;
         }
         $.post('/', {
             'color': message,
