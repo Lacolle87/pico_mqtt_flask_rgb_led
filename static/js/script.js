@@ -23,8 +23,8 @@ $(function () {
             var rainbowEffect = $('#rainbow_effect').val();
             if (rainbowEffect === 'rainbow') {
                 message = 'rainbow';
-            } else if (rainbowEffect === 'wave') {
-                message = 'wave';
+            } else if (rainbowEffect === 'cycle') {
+                message = 'cycle';
             } else if (rainbowEffect === 'sync') {
                 message = 'sync';
             }

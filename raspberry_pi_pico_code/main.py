@@ -23,6 +23,8 @@ np = neopixel.NeoPixel(Pin(PIXEL_PIN), NUM_LEDS)
 
 # Define rainbow mode variable
 rainbow_mode = False
+cycle_mode = False
+sync_mode = False
 
 
 def wheel(pos):
@@ -38,23 +40,68 @@ def wheel(pos):
 
 
 def rainbow_cycle():
-    global rainbow_speed
+    global speed
     # Cycle through rainbow colors on neopixels
     for j in range(255):
         for i in range(NUM_LEDS):
             idx = int((i * 256 / NUM_LEDS) + j)
             np[i] = wheel(idx & 255)
         np.write()
-        time.sleep(rainbow_speed)
+        time.sleep(speed)
         if not rainbow_mode:
             break
 
 
+def sync():
+    global speed
+    colors = [wheel(j) for j in
+              range(256)]  # Generate colors for all 256 positions
+    j = 0  # Initialize j variable
+    while True:
+        color = colors[j % 256]
+        for i in range(NUM_LEDS):
+            np[i] = color  # Set the LED color to the current color
+        np.write()
+        time.sleep(speed)
+        j += 1  # Increment j variable
+        if not sync_mode:
+            break
+
+
+def cycle():
+    global speed
+    gradient_segments = [(0.0, (255, 0, 0)),
+                         (0.2, (255, 127, 0)),
+                         (0.4, (255, 255, 0)),
+                         (0.6, (0, 255, 0)),
+                         (0.8, (0, 0, 255)),
+                         (1.0, (75, 0, 130))]
+    for j in range(255):
+        for i in range(NUM_LEDS):
+            offset = i / NUM_LEDS
+            for idx in range(len(gradient_segments) - 1):
+                if gradient_segments[idx + 1][0] > offset:
+                    break
+            segment_offset = (offset - gradient_segments[idx][0]) / (gradient_segments[idx + 1][0] - gradient_segments[idx][0])
+            color1, color2 = gradient_segments[idx][1], gradient_segments[idx + 1][1]
+            color = tuple(int(c1 * (1 - segment_offset) + c2 * segment_offset) for c1, c2 in zip(color1, color2))
+            np[i] = color
+        np.write()
+        time.sleep(speed * 25)
+        gradient_segments = gradient_segments[1:] + [gradient_segments[0]]
+        if not cycle_mode:
+            break
+
+
 def neo_thread():
-    global rainbow_mode, rainbow_speed
+    global rainbow_mode, cycle_mode, sync_mode, speed
     while True:
         if rainbow_mode:
             rainbow_cycle()
+        elif cycle_mode:
+            cycle()
+        elif sync_mode:
+            sync()
         else:
             time.sleep(0.01)
 
@@ -65,10 +112,12 @@ _thread.start_new_thread(neo_thread, ())
 
 def callback(topic, message):
     # Define the callback function to handle received messages
-    global rainbow_mode, rainbow_speed
+    global rainbow_mode, cycle_mode, sync_mode, speed
     print("Received message: {} on topic: {}".format(message, topic))
     if message.startswith(b"rgb"):
         rainbow_mode = False
+        cycle_mode = False
+        sync_mode = False
         rgb = message.decode().split(":")[1].split(",")
         r = int(rgb[0])
         g = int(rgb[1])
@@ -77,13 +126,21 @@ def callback(topic, message):
         np[1] = (r, g, b)
         np[2] = (r, g, b)
         np.write()
-    elif message.startswith(b"rainbow"):
-        # Turn on rainbow mode
-        rainbow_mode = True
-        # Extract the speed from the message
-        speed = message.decode().split(".")[-1]
-        # Convert the speed to a float and update the rainbow_speed variable
-        rainbow_speed = float(speed) / 1000
+    else:
+        mode = message.split(b".")[0]
+        if mode == b"rainbow":
+            rainbow_mode = True
+            cycle_mode = False
+            sync_mode = False
+        elif mode == b"cycle":
+            rainbow_mode = False
+            cycle_mode = True
+            sync_mode = False
+        elif mode == b"sync":
+            rainbow_mode = False
+            cycle_mode = False
+            sync_mode = True
+        speed = float(message.split(b".")[-1]) / 1000
 
 
 def wifi_connect():
