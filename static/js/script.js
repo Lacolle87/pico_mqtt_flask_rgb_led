@@ -1,39 +1,41 @@
 $(function () {
-    const speedInput = document.getElementById('speed');
-    const reversedValue = parseInt(speedInput.max) + parseInt(speedInput.min) - parseInt(speedInput.value);
-    speedInput.value = reversedValue;
+  const speedInput = document.getElementById('speed');
+  const reversedValue = parseInt(speedInput.max) + parseInt(speedInput.min) - parseInt(speedInput.value);
+  speedInput.value = reversedValue;
 
-    $('#rainbow_mode').change(function () {
-        const rainbowMode = $(this).is(':checked');
-        const mode = rainbowMode ? 'rainbow' : 'solid';
-        $('#speed').prop('disabled', !rainbowMode);
-        $('#red, #green, #blue').prop('disabled', rainbowMode);
-        $.post('/', {'rainbow_mode': mode});
-    });
+  $('#rainbow_mode').change(function () {
+    const isRainbow = $(this).is(':checked');
+    $('#speed').prop('disabled', !isRainbow);
+    $('#red, #green, #blue').prop('disabled', isRainbow);
+    $.post('/', {'rainbow_mode': isRainbow});
+  });
 
-    $('#led-form').submit(function (event) {
-        event.preventDefault();
-        var red = $('#red').val();
-        var green = $('#green').val();
-        var blue = $('#blue').val();
-        var speed = $('#speed').val();
-        var isRainbow = !!$('#rainbow_mode').is(':checked');
-        var message = `rgb:${red},${green},${blue}`;
-        if (isRainbow) {
-            var rainbowEffect = $('#rainbow_effect').val();
-            if (rainbowEffect === 'rainbow') {
-                message = 'rainbow';
-            } else if (rainbowEffect === 'cycle') {
-                message = 'cycle';
-            } else if (rainbowEffect === 'sync') {
-                message = 'sync';
-            }
-            var reversedSpeed = parseInt(speedInput.max) + parseInt(speedInput.min) - parseInt(speed);
-            message += `.${reversedSpeed}`;
-        }
-        $.post('/', {
-            'color': message,
-            'mode': isRainbow
-        });
+  $('#led-form').submit(function (event) {
+    event.preventDefault();
+    const red = $('#red').val();
+    const green = $('#green').val();
+    const blue = $('#blue').val();
+    const speed = $('#speed').val();
+    const isRainbow = $('#rainbow_mode').is(':checked');
+    let message;
+    if (isRainbow) {
+      const rainbowEffect = $('#rainbow_effect').val();
+      if (rainbowEffect === 'rainbow') {
+        message = 'rainbow';
+      } else if (rainbowEffect === 'cycle') {
+        message = 'cycle';
+      } else if (rainbowEffect === 'sync') {
+        message = 'sync';
+      }
+      const reversedSpeed = parseInt(speedInput.max) + parseInt(speedInput.min) - parseInt(speed);
+      message += `.${reversedSpeed}`;
+    } else {
+      message = `rgb:${red},${green},${blue}`;
+    }
+    $.post('/', {
+      'color': message,
+      'mode': isRainbow
     });
+  });
 });
+
