@@ -17,9 +17,9 @@ $(function () {
         var green = $('#green').val();
         var blue = $('#blue').val();
         var speed = $('#speed').val();
-        var mode = $('#rainbow_mode').is(':checked') ? 'rainbow' : 'solid';
+        var isRainbow = !!$('#rainbow_mode').is(':checked');
         var message = `rgb:${red},${green},${blue}`;
-        if (mode === 'rainbow') {
+        if (isRainbow) {
             var rainbowEffect = $('#rainbow_effect').val();
             if (rainbowEffect === 'rainbow') {
                 message = 'rainbow';
@@ -33,7 +33,7 @@ $(function () {
         }
         $.post('/', {
             'color': message,
-            'mode': mode
+            'mode': isRainbow
         });
     });
 });
